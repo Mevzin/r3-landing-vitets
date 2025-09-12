@@ -15,6 +15,7 @@ export interface Plan {
   price: number;
   currency: string;
   interval: string;
+  duration?: number;
   stripeProductId: string;
   stripePriceId: string;
   features: string[];
@@ -49,6 +50,10 @@ export interface ProgressData {
   weightLoss: number;
   caloriesBurned: number;
   workoutsCompleted: number;
+  currentStreak?: number;
+  longestStreak?: number;
+  averageWorkoutDuration?: number;
+  previousWeekWorkouts?: number;
   performanceMetrics: {
     strength: number;
     endurance: number;
@@ -60,10 +65,24 @@ export interface ProgressData {
     workouts: number;
     calories: number;
   };
+  weeklyGoal?: {
+    workouts: number;
+    duration: number;
+  };
   weeklyProgress: {
     workouts: number;
     calories: number;
+    duration?: number;
   };
+  monthlyProgress?: {
+    workouts: number;
+    calories: number;
+  };
+  recentWorkouts?: {
+    name?: string;
+    duration?: number;
+    date?: string;
+  }[];
   createdAt: string;
   updatedAt: string;
 }

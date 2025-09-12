@@ -2,21 +2,20 @@ import axios from 'axios';
 
 const API_BASE_URL = 'http://localhost:3333/api/v1';
 
-// Configuração do axios
+
 const api = axios.create({
   baseURL: API_BASE_URL,
+  withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-// Interceptor para adicionar token automaticamente
+
+
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
+    
     return config;
   },
   (error) => {
@@ -24,22 +23,41 @@ api.interceptors.request.use(
   }
 );
 
-// Interceptor para tratar respostas e erros
+
 api.interceptors.response.use(
   (response) => response,
-  (error) => {
-    if (error.response?.status === 401) {
-      localStorage.removeItem('token');
-      window.location.href = '/login';
+  async (error) => {
+    const originalRequest = error.config;
+    
+
+    if (error.response?.status === 401 && 
+        error.response?.data?.shouldRefresh && 
+        !originalRequest._retry) {
+      
+      originalRequest._retry = true;
+      
+      try {
+  
+        await api.post('/user/refresh');
+        
+
+        return api(originalRequest);
+      } catch (refreshError) {
+
+        console.error('Erro ao renovar token:', refreshError);
+        return Promise.reject(refreshError);
+      }
     }
+    
+
     return Promise.reject(error);
   }
 );
 
-// Import types
+
 import type { User, Plan, Workout, Exercise } from '../types';
 
-// Serviços de API
+
 export const authService = {
   login: async (email: string, password: string) => {
     const response = await api.post('/user/login', { email, password });
@@ -61,6 +79,20 @@ export const authService = {
   getCurrentUser: async () => {
     const response = await api.get('/user/me');
     return response.data;
+  },
+
+  refreshToken: async () => {
+    const response = await api.post('/user/refresh');
+    return response.data;
+  },
+
+  logout: async () => {
+    try {
+      await api.post('/user/logout');
+    } catch (error) {
+      console.error('Erro ao fazer logout:', error);
+  
+    }
   },
 };
 
@@ -104,7 +136,7 @@ export const userService = {
 export const paymentService = {
   getPlans: async () => {
     const response = await api.get('/payment/plans');
-    return response.data;
+    return response.data.plans || [];
   },
 
   createCustomer: async (userId: string) => {
@@ -151,7 +183,12 @@ export const paymentService = {
     planId: string;
     paymentMethodId: string;
   }) => {
-    const response = await api.post('/payment/subscribe', data);
+    const response = await api.post('/payment/monthly-payment', data);
+    return response.data;
+  },
+
+  syncStripeProducts: async () => {
+    const response = await api.post('/payment/sync-stripe-products');
     return response.data;
   },
 };

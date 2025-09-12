@@ -47,7 +47,7 @@ const Home: React.FC = () => {
 
   return (
     <div className="min-h-screen">
-      {/* Hero Section */}
+
       <section className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground py-20">
         <div className="container mx-auto px-4 text-center">
           <h1 className="text-4xl md:text-6xl font-bold mb-6">
@@ -69,7 +69,7 @@ const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* Features Section */}
+
       <section className="py-20 bg-background">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
@@ -116,7 +116,7 @@ const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* Plans Section */}
+
       <section id="planos" className="py-20 bg-muted/50">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
@@ -158,7 +158,7 @@ const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
+
       <section className="py-20 bg-primary text-primary-foreground">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-6">

@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../lib/auth';
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { User, Calendar, CreditCard, Activity, Clock, Target } from 'lucide-react';
@@ -10,6 +11,7 @@ import type { Plan, Workout, ProgressData } from '../types';
 
 const Dashboard: React.FC = () => {
   const { user } = useAuth();
+
   const [userPlan, setUserPlan] = useState<Plan | null>(null);
   const [recentWorkouts, setRecentWorkouts] = useState<Workout[]>([]);
   const [userProgress, setUserProgress] = useState<ProgressData | null>(null);
@@ -21,53 +23,56 @@ const Dashboard: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string>('');
 
-  useEffect(() => {
-    fetchDashboardData();
-  }, []);
-
-  const fetchDashboardData = async () => {
+  const fetchDashboardData = useCallback(async () => {
     try {
       setIsLoading(true);
       setError('');
 
-      // Buscar dados em paralelo
+
       const [plansResponse, workoutsResponse, progressResponse] = await Promise.allSettled([
         paymentService.getPlans(),
         user?.id ? fileService.getFileByUserId(user.id) : Promise.resolve({ files: [] }),
         progressService.getProgress()
       ]);
 
-      // Processar planos
+
       if (plansResponse.status === 'fulfilled' && plansResponse.value.plans?.length > 0) {
-        // Por enquanto, pegar o primeiro plano como exemplo
+
         setUserPlan(plansResponse.value.plans[0]);
       }
 
-      // Processar treinos
+
       if (workoutsResponse.status === 'fulfilled' && workoutsResponse.value.files) {
-        setRecentWorkouts(workoutsResponse.value.files.slice(0, 3)); // Últimos 3 treinos
+        setRecentWorkouts(workoutsResponse.value.files.slice(0, 3));
       }
 
-      // Processar progresso
+
       if (progressResponse.status === 'fulfilled') {
         setUserProgress(progressResponse.value.progress);
       }
 
-      // Atualizar stats baseado nos dados reais
-      setStats({
-        totalWorkouts: userProgress?.workoutsCompleted || 0,
-        thisWeekWorkouts: userProgress?.weeklyProgress?.workouts || 0,
-        nextWorkout: 'Próximo treino disponível'
-      });
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
+    } catch (error: Error | unknown) {
       console.error('Erro ao carregar dados do dashboard:', error);
       setError('Erro ao carregar dados do dashboard');
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [user?.id]);
+
+  useEffect(() => {
+    fetchDashboardData();
+  }, [fetchDashboardData]);
+
+  useEffect(() => {
+    if (userProgress) {
+      setStats({
+        totalWorkouts: userProgress.workoutsCompleted || 0,
+        thisWeekWorkouts: userProgress.weeklyProgress?.workouts || 0,
+        nextWorkout: 'Próximo treino disponível'
+      });
+    }
+  }, [userProgress]);
 
   if (isLoading) {
     return (
@@ -92,13 +97,15 @@ const Dashboard: React.FC = () => {
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-        <h1 className="text-3xl font-bold">Dashboard</h1>
-        <p className="text-muted-foreground mt-2 sm:mt-0">
-          Bem-vindo de volta, {user?.name}!
-        </p>
+        <div>
+          <h1 className="text-3xl font-bold">Dashboard</h1>
+          <p className="text-muted-foreground mt-2">
+            Bem-vindo de volta, {user?.name}!
+          </p>
+        </div>
       </div>
 
-      {/* Stats Cards */}
+
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -141,7 +148,7 @@ const Dashboard: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Current Plan */}
+
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center">
@@ -186,7 +193,7 @@ const Dashboard: React.FC = () => {
           </CardContent>
         </Card>
 
-        {/* Recent Workouts */}
+
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center">
@@ -222,7 +229,7 @@ const Dashboard: React.FC = () => {
         </Card>
       </div>
 
-      {/* Quick Actions */}
+
       <Card>
         <CardHeader>
           <CardTitle>Ações Rápidas</CardTitle>

@@ -29,11 +29,11 @@ const Progress: React.FC = () => {
       setIsLoading(true);
       setError(null);
       
-      // Buscar progresso do usuário atual
+  
       const progressData = await progressService.getProgress();
       setProgress(progressData);
       
-      // Calcular estatísticas baseadas no progresso
+  
       const calculatedStats: ProgressStats = {
         totalWorkouts: progressData.workoutsCompleted || 0,
         weeklyWorkouts: progressData.weeklyProgress?.workouts || 0,
@@ -100,7 +100,7 @@ const Progress: React.FC = () => {
         </p>
       </div>
 
-      {/* Estatísticas Principais */}
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -158,7 +158,7 @@ const Progress: React.FC = () => {
         </Card>
       </div>
 
-      {/* Metas e Progresso */}
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         <Card>
           <CardHeader>
@@ -243,7 +243,7 @@ const Progress: React.FC = () => {
         </Card>
       </div>
 
-      {/* Histórico Recente */}
+
       <Card>
         <CardHeader>
           <CardTitle>Histórico Recente</CardTitle>

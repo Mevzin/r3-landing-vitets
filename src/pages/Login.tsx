@@ -28,8 +28,9 @@ const Login: React.FC = () => {
     try {
       await login(data.email, data.password);
       navigate('/dashboard');
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Erro ao fazer login');
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { message?: string } } };
+      setError(error.response?.data?.message || 'Erro ao fazer login');
     } finally {
       setIsLoading(false);
     }

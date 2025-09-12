@@ -7,7 +7,7 @@ import type { User } from '../types';
 interface AuthContextType {
   user: User | null;
   login: (email: string, password: string) => Promise<void>;
-  logout: () => void;
+  logout: () => Promise<void>;
   isLoading: boolean;
   checkAuthStatus: () => Promise<void>;
 }
@@ -19,44 +19,51 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [hasCheckedAuth, setHasCheckedAuth] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      // Verificar se o token é válido
+
+    if (!hasCheckedAuth) {
       checkAuthStatus();
-    } else {
-      setIsLoading(false);
     }
-  }, []);
+  }, [hasCheckedAuth]);
 
   const checkAuthStatus = async () => {
     try {
+
       const response = await authService.getCurrentUser();
-      setUser(response.user);
+      setUser(response);
     } catch (error) {
-      localStorage.removeItem('token');
+      console.error('Error checking auth status:', error);
+      
+      
+      setUser(null);
     } finally {
       setIsLoading(false);
+      setHasCheckedAuth(true);
     }
   };
 
   const login = async (email: string, password: string) => {
     try {
       const response = await authService.login(email, password);
-      
-      const { token, user: userData } = response;
-      
-      localStorage.setItem('token', token);
+
+      const { user: userData } = response;
       setUser(userData);
     } catch (error) {
+      console.error('Error logging in:', error);
       throw error;
     }
   };
 
-  const logout = () => {
-    localStorage.removeItem('token');
-    setUser(null);
+  const logout = async () => {
+    try {
+      await authService.logout();
+    } catch (error) {
+      console.error('Error during logout:', error);
+    } finally {
+      setUser(null);
+    }
   };
 
   const value: AuthContextType = {

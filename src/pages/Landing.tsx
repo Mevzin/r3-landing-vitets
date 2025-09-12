@@ -2,10 +2,26 @@ import { Button } from '../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { Check, Download, Users, Trophy, Target, MapPin, Phone, Mail, Instagram, Facebook, Youtube } from 'lucide-react';
+import { Link, Navigate } from 'react-router-dom';
+import { useAuth } from '../lib/auth';
 
 const Landing = () => {
+  const { user, isLoading } = useAuth();
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  if (user) {
+    return <Navigate to="/dashboard" />;
+  }
+
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
 
       <header className="bg-primary text-white py-4 px-6">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
@@ -22,9 +38,9 @@ const Landing = () => {
             <a href="#app" className="hover:text-tertiary transition-colors">App</a>
             <a href="#contato" className="hover:text-tertiary transition-colors">Contato</a>
           </nav>
-          <Button className="bg-red-600 hover:bg-red-700 text-white">
+          <Link className="flex items-center justify-center rounded-lg bg-red-600 hover:bg-red-700 text-white w-20 h-10 font-bold" to="/login">
             Login
-          </Button>
+          </Link>
         </div>
       </header>
 
@@ -47,20 +63,16 @@ const Landing = () => {
               <Button size="lg" className="bg-red-600 hover:bg-red-700 text-white px-8 py-4 text-lg">
                 Começar Agora
               </Button>
-              <Button size="lg" variant="outline" className="border-tertiary text-tertiary hover:bg-tertiary hover:text-primary px-8 py-4 text-lg">
+              <Button size="lg" variant="outline" className="border-tertiary text-black hover:bg-tertiary hover:text-gray-700 px-8 py-4 text-lg hover:bg-gray-200">
                 Ver Planos
               </Button>
             </div>
           </div>
         </div>
-
-        <div className="absolute right-0 top-0 w-1/2 h-full bg-gradient-to-l from-transparent to-primary/80 hidden lg:block">
-          <div className="w-full h-full bg-cover bg-center opacity-30" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 600'%3E%3Crect fill='%23222b38' width='1000' height='600'/%3E%3C/svg%3E")` }}></div>
-        </div>
       </section>
 
 
-      <section id="sobre" className="py-20 bg-white">
+      <section id="sobre" className="py-20 bg-background">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-primary mb-4">Sobre a Academia R3</h2>
@@ -72,7 +84,7 @@ const Landing = () => {
       </section>
 
 
-      <section className="py-20 bg-gray-50">
+      <section className="py-20 bg-background">
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
@@ -154,7 +166,7 @@ const Landing = () => {
 
           <div className="grid md:grid-cols-3 gap-8">
 
-            <Card className="bg-white border-2 border-gray-200 hover:border-tertiary transition-all duration-300">
+            <Card className="bg-card border-2 border-border hover:border-tertiary transition-all duration-300">
               <CardHeader className="text-center">
                 <CardTitle className="text-2xl font-bold text-primary">Básico</CardTitle>
                 <div className="text-4xl font-bold text-primary mt-4">
@@ -184,7 +196,7 @@ const Landing = () => {
             </Card>
 
 
-            <Card className="bg-white border-2 border-red-600 hover:border-red-700 transition-all duration-300 relative">
+            <Card className="bg-card border-2 border-red-600 hover:border-red-700 transition-all duration-300 relative">
               <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
                 <Badge className="bg-red-600 text-white px-4 py-2">
                   MAIS POPULAR
@@ -223,7 +235,7 @@ const Landing = () => {
             </Card>
 
 
-            <Card className="bg-white border-2 border-gray-200 hover:border-tertiary transition-all duration-300">
+            <Card className="bg-card border-2 border-border hover:border-tertiary transition-all duration-300">
               <CardHeader className="text-center">
                 <CardTitle className="text-2xl font-bold text-primary">VIP</CardTitle>
                 <div className="text-4xl font-bold text-primary mt-4">
@@ -260,7 +272,7 @@ const Landing = () => {
       </section>
 
 
-      <section id="app" className="py-20 bg-white">
+      <section id="app" className="py-20 bg-background">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-primary mb-4">Baixe Nosso App</h2>
@@ -346,13 +358,13 @@ const Landing = () => {
                 Transformando vidas através do fitness e bem-estar há mais de 10 anos.
               </p>
               <div className="flex space-x-4">
-                <div className="w-10 h-10 bg-secondary rounded-full flex items-center justify-center hover:bg-red-600 transition-colors cursor-pointer">
+                <div className="w-10 h-10 bg-orange-700 rounded-full flex items-center justify-center hover:bg-purple-600 transition-colors cursor-pointer">
                   <Instagram className="w-5 h-5" />
                 </div>
-                <div className="w-10 h-10 bg-secondary rounded-full flex items-center justify-center hover:bg-red-600 transition-colors cursor-pointer">
+                <div className="w-10 h-10 bg-blue-700 rounded-full flex items-center justify-center hover:bg-blue-600 transition-colors cursor-pointer">
                   <Facebook className="w-5 h-5" />
                 </div>
-                <div className="w-10 h-10 bg-secondary rounded-full flex items-center justify-center hover:bg-red-600 transition-colors cursor-pointer">
+                <div className="w-10 h-10 bg-red-700 rounded-full flex items-center justify-center hover:bg-red-600 transition-colors cursor-pointer">
                   <Youtube className="w-5 h-5" />
                 </div>
               </div>
