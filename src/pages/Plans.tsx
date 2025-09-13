@@ -11,6 +11,7 @@ import PlanFormDialog from '../components/PlanFormDialog';
 const Plans: React.FC = () => {
   const { user } = useAuth();
   const [plans, setPlans] = useState<Plan[]>([]);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [userSubscription, setUserSubscription] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -126,11 +127,11 @@ const Plans: React.FC = () => {
     try {
       setIsSyncing(true);
       setError(null);
-      
+
       const response = await paymentService.syncStripeProducts();
-      
+
       alert(`Sincronização concluída!\n${response.result.syncedCount} produtos sincronizados\n${response.result.skippedCount} produtos já existiam`);
-      
+
       await fetchPlans();
     } catch (err) {
       setError('Erro ao sincronizar produtos do Stripe. Tente novamente.');
@@ -297,8 +298,8 @@ const Plans: React.FC = () => {
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold">Planos Criados</h2>
         <div className="flex gap-2">
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             onClick={handleSyncStripeProducts}
             disabled={isSyncing}
           >
@@ -371,7 +372,7 @@ const Plans: React.FC = () => {
           {user?.role === 'admin' ? 'Gerenciar Planos' : 'Planos'}
         </h1>
         <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-          {user?.role === 'admin' 
+          {user?.role === 'admin'
             ? 'Gerencie todos os planos disponíveis na plataforma.'
             : 'Encontre o plano perfeito para seus objetivos fitness.'
           }
@@ -395,7 +396,7 @@ const Plans: React.FC = () => {
         <div className="text-center py-12">
           <h3 className="text-xl font-semibold mb-2">Nenhum plano disponível</h3>
           <p className="text-muted-foreground mb-4">
-            {user?.role === 'admin' 
+            {user?.role === 'admin'
               ? 'Nenhum plano foi criado ainda. Clique em "Criar Novo Plano" para começar.'
               : 'Não há planos cadastrados no momento.'
             }

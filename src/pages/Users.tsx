@@ -7,14 +7,13 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Edit, Users as UsersIcon, Calendar, CreditCard } from 'lucide-react';
-import { useAuth } from '../lib/auth';
 import { userService, paymentService } from '../services/api';
 
 interface User {
   id: string;
   name: string;
   email: string;
-  role: 'user' | 'personal' | 'admin';
+  role: 'user' | 'admin';
   createdAt: string;
 }
 
@@ -30,11 +29,10 @@ interface Subscription {
 interface EditForm {
   name: string;
   email: string;
-  role: 'user' | 'personal' | 'admin';
+  role: 'user' | 'admin';
 }
 
 const Users: React.FC = () => {
-  const { user: currentUser } = useAuth();
   const [users, setUsers] = useState<User[]>([]);
   const [subscriptions, setSubscriptions] = useState<Record<string, Subscription>>({});
   const [loading, setLoading] = useState(true);
@@ -62,11 +60,8 @@ const Users: React.FC = () => {
       const subscriptionResults = await Promise.all(subscriptionPromises);
       const subscriptionMap: Record<string, Subscription> = {};
 
-      console.log("sub", subscriptionPromises)
-
       subscriptionResults.forEach((sub, index) => {
         if (sub) {
-          console.log("sub", sub)
           subscriptionMap[userData[index].id] = sub;
         }
       });
@@ -84,11 +79,11 @@ const Users: React.FC = () => {
       const response = await paymentService.getUserSubscription(userId);
 
       const monthlyPayment = response.monthlyPayment;
-      
+
       if (!monthlyPayment) {
         return null;
       }
-      
+
 
       return {
         id: monthlyPayment._id,
@@ -174,7 +169,6 @@ const Users: React.FC = () => {
       </div>
     );
   }
-  console.log('Current user:', users);
   return (
     <div className="container mx-auto p-6">
       <div className="flex items-center gap-2 mb-6">
@@ -248,15 +242,14 @@ const Users: React.FC = () => {
 
                         <div className="grid gap-2">
                           <Label htmlFor="role">Função</Label>
-                          <Select value={editForm.role} onValueChange={(value: 'user' | 'personal' | 'admin') =>
-                            setEditForm(prev => ({ ...prev, role: value }))
+                          <Select value={editForm.role} onValueChange={(value) =>
+                            setEditForm(prev => ({ ...prev, role: value as 'user' | 'admin' }))
                           }>
                             <SelectTrigger>
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
                               <SelectItem value="user">Usuário</SelectItem>
-                              <SelectItem value="personal">Personal Trainer</SelectItem>
                               <SelectItem value="admin">Administrador</SelectItem>
                             </SelectContent>
                           </Select>

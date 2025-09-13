@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
-import { Input } from '../components/ui/input';
 import { Badge } from '../components/ui/badge';
 import { fileService, userService } from '../services/api';
 import { useAuth } from '../lib/auth';
@@ -18,7 +17,7 @@ const Workouts: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [isEditingWorkout, setIsEditingWorkout] = useState(false);
 
-  const isPersonalOrAdmin = user?.role === 'personal' || user?.role === 'admin';
+  const isPersonalOrAdmin = user?.role === 'admin';
 
   useEffect(() => {
     if (isPersonalOrAdmin) {
@@ -243,9 +242,8 @@ const Workouts: React.FC = () => {
                         <h4 className="font-medium">{userItem.name}</h4>
                         <p className="text-sm text-muted-foreground">{userItem.email}</p>
                         <div className="flex items-center gap-2 mt-1">
-                          <Badge variant={userItem.role === 'admin' ? 'default' : userItem.role === 'personal' ? 'secondary' : 'outline'}>
-                            {userItem.role === 'admin' ? 'Administrador' : 
-                             userItem.role === 'personal' ? 'Personal Trainer' : 'Usuário'}
+                          <Badge variant={userItem.role === 'admin' ? 'default' : 'outline'}>
+                            {userItem.role === 'admin' ? 'Administrador' : 'Usuário'}
                           </Badge>
                           <span className="text-xs text-muted-foreground">
                             Criado em {new Date(userItem.createdAt).toLocaleDateString('pt-BR')}

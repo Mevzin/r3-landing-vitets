@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from './ui/dialog';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
-import { Card, CardContent } from './ui/card';
 import { paymentService } from '../services/api';
 import type { Plan } from '../types';
 
@@ -125,7 +124,7 @@ const PlanFormDialog: React.FC<PlanFormDialogProps> = ({
             {isEditing ? 'Editar Plano' : 'Criar Novo Plano'}
           </DialogTitle>
           <DialogDescription>
-            {isEditing 
+            {isEditing
               ? 'Modifique as informações do plano abaixo.'
               : 'Preencha as informações para criar um novo plano.'
             }
