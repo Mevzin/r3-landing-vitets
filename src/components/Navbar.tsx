@@ -131,7 +131,7 @@ const Navbar: React.FC = () => {
               {theme === 'dark' ? (
                 <Sun className="w-4 h-4" />
               ) : (
-                <Moon className="w-4 h-4 text-white" />
+                <Moon className="w-4 h-4" />
               )}
             </Button>
 
