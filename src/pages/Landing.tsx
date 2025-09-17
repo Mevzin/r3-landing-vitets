@@ -170,7 +170,7 @@ const Landing = () => {
 
             <Card className="bg-card border-2 border-border hover:border-accent transition-all duration-300">
               <CardHeader className="text-center">
-                <CardTitle className="text-2xl font-bold text-card-foreground">Básico</CardTitle>
+                <CardTitle className="text-2xl font-bold text-card-foreground">Diária</CardTitle>
                 <div className="text-4xl font-bold text-card-foreground mt-4">
                   R$ <span className="text-destructive">89</span>,90
                 </div>
@@ -205,9 +205,9 @@ const Landing = () => {
                 </Badge>
               </div>
               <CardHeader className="text-center pt-8">
-                <CardTitle className="text-2xl font-bold text-card-foreground">Premium</CardTitle>
+                <CardTitle className="text-2xl font-bold text-card-foreground">Anual</CardTitle>
                 <div className="text-4xl font-bold text-card-foreground mt-4">
-                  R$ <span className="text-destructive">149</span>,90
+                  R$ <span className="text-destructive">700</span>,90
                 </div>
                 <CardDescription className="text-muted-foreground">por mês</CardDescription>
               </CardHeader>
@@ -239,7 +239,7 @@ const Landing = () => {
 
             <Card className="bg-card border-2 border-border hover:border-accent transition-all duration-300">
               <CardHeader className="text-center">
-                <CardTitle className="text-2xl font-bold text-card-foreground">VIP</CardTitle>
+                <CardTitle className="text-2xl font-bold text-card-foreground">Mensal</CardTitle>
                 <div className="text-4xl font-bold text-card-foreground mt-4">
                   R$ <span className="text-destructive">249</span>,90
                 </div>
