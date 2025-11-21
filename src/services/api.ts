@@ -1,21 +1,36 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:3333/api/v1';
 
+const API_BASE_URL = 'https://r3fitnesscenter.squareweb.app/api/v1';
+//const API_BASE_URL = 'http://localhost:3333/api/v1';
+
+const tokenManager = {
+  getAccessToken: () => localStorage.getItem('accessToken'),
+  getRefreshToken: () => localStorage.getItem('refreshToken'),
+  setTokens: (accessToken: string, refreshToken: string) => {
+    localStorage.setItem('accessToken', accessToken);
+    localStorage.setItem('refreshToken', refreshToken);
+  },
+  clearTokens: () => {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+  }
+};
 
 const api = axios.create({
   baseURL: API_BASE_URL,
-  withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-
-
 api.interceptors.request.use(
   (config) => {
-    
+    const token = tokenManager.getAccessToken();
+
+    if (token && token !== 'null' && token !== 'undefined') {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
     return config;
   },
   (error) => {
@@ -23,32 +38,41 @@ api.interceptors.request.use(
   }
 );
 
-
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
-    
 
-    if (error.response?.status === 401 && 
-        error.response?.data?.shouldRefresh && 
-        !originalRequest._retry) {
-      
+    if (error.response?.status === 401 &&
+      error.response?.data?.shouldRefresh &&
+      !originalRequest._retry) {
+
       originalRequest._retry = true;
-      
-      try {
-  
-        await api.post('/user/refresh');
-        
 
+      try {
+        const refreshToken = tokenManager.getRefreshToken();
+        if (!refreshToken) {
+          throw new Error('No refresh token available');
+        }
+
+        const response = await axios.post(`${API_BASE_URL}/user/refresh`, {}, {
+          headers: {
+            'X-Refresh-Token': refreshToken
+          }
+        });
+
+        const { accessToken, refreshToken: newRefreshToken } = response.data;
+        tokenManager.setTokens(accessToken, newRefreshToken);
+
+        originalRequest.headers.Authorization = `Bearer ${accessToken}`;
         return api(originalRequest);
       } catch (refreshError) {
-
         console.error('Erro ao renovar token:', refreshError);
+        tokenManager.clearTokens();
+        window.location.href = '/login';
         return Promise.reject(refreshError);
       }
     }
-    
 
     return Promise.reject(error);
   }
@@ -61,6 +85,10 @@ import type { User, Plan, Workout, Exercise } from '../types';
 export const authService = {
   login: async (email: string, password: string) => {
     const response = await api.post('/user/login', { email, password });
+    const { accessToken, refreshToken } = response.data;
+
+    tokenManager.setTokens(accessToken, refreshToken);
+
     return response.data;
   },
 
@@ -69,7 +97,6 @@ export const authService = {
     email: string;
     password: string;
     age: number;
-    height: number;
     phone?: string;
   }) => {
     const response = await api.post('/user/register', userData);
@@ -82,18 +109,51 @@ export const authService = {
   },
 
   refreshToken: async () => {
-    const response = await api.post('/user/refresh');
+    const refreshToken = tokenManager.getRefreshToken();
+    if (!refreshToken) {
+      throw new Error('No refresh token available');
+    }
+
+    const response = await axios.post(`${API_BASE_URL}/user/refresh`, {}, {
+      headers: {
+        'X-Refresh-Token': refreshToken
+      }
+    });
+
+    const { accessToken, refreshToken: newRefreshToken } = response.data;
+    tokenManager.setTokens(accessToken, newRefreshToken);
+
     return response.data;
   },
 
   logout: async () => {
     try {
-      await api.post('/user/logout');
+      const refreshToken = tokenManager.getRefreshToken();
+      if (refreshToken) {
+        await api.post('/user/logout', {}, {
+          headers: {
+            'X-Refresh-Token': refreshToken
+          }
+        });
+      }
     } catch (error) {
       console.error('Erro ao fazer logout:', error);
-  
+    } finally {
+      tokenManager.clearTokens();
     }
   },
+
+  isAuthenticated: () => {
+    const token = tokenManager.getAccessToken();
+    return !!(token && token !== 'null' && token !== 'undefined');
+  },
+
+  getTokens: () => {
+    return {
+      accessToken: tokenManager.getAccessToken(),
+      refreshToken: tokenManager.getRefreshToken()
+    };
+  }
 };
 
 export const userService = {

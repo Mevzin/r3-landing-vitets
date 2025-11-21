@@ -149,7 +149,7 @@ const Landing = () => {
               <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Target className="w-8 h-8 text-white" />
               </div>
-              <div className="text-4xl font-bold text-green-500 mb-2">10+</div>
+              <div className="text-4xl font-bold text-green-600 dark:text-green-400 mb-2">10+</div>
               <div className="text-gray-300">Anos de Experiência</div>
             </div>
           </div>
@@ -179,15 +179,15 @@ const Landing = () => {
               <CardContent className="space-y-4">
                 <div className="space-y-3">
                   <div className="flex items-center space-x-3">
-                    <Check className="w-5 h-5 text-green-500" />
+                    <Check className="w-5 h-5 text-green-600 dark:text-green-400" />
                     <span className="text-card-foreground">Acesso à musculação</span>
                   </div>
                   <div className="flex items-center space-x-3">
-                    <Check className="w-5 h-5 text-green-500" />
+                    <Check className="w-5 h-5 text-green-600 dark:text-green-400" />
                     <span className="text-card-foreground">Horário comercial</span>
                   </div>
                   <div className="flex items-center space-x-3">
-                    <Check className="w-5 h-5 text-green-500" />
+                    <Check className="w-5 h-5 text-green-600 dark:text-green-400" />
                     <span className="text-card-foreground">Vestiário</span>
                   </div>
                 </div>
@@ -214,19 +214,19 @@ const Landing = () => {
               <CardContent className="space-y-4">
                 <div className="space-y-3">
                   <div className="flex items-center space-x-3">
-                    <Check className="w-5 h-5 text-green-500" />
+                    <Check className="w-5 h-5 text-green-600 dark:text-green-400" />
                     <span className="text-card-foreground">Tudo do plano Básico</span>
                   </div>
                   <div className="flex items-center space-x-3">
-                    <Check className="w-5 h-5 text-green-500" />
+                    <Check className="w-5 h-5 text-green-600 dark:text-green-400" />
                     <span className="text-card-foreground">Aulas em grupo</span>
                   </div>
                   <div className="flex items-center space-x-3">
-                    <Check className="w-5 h-5 text-green-500" />
+                    <Check className="w-5 h-5 text-green-600 dark:text-green-400" />
                     <span className="text-card-foreground">Acesso 24h</span>
                   </div>
                   <div className="flex items-center space-x-3">
-                    <Check className="w-5 h-5 text-green-500" />
+                    <Check className="w-5 h-5 text-green-600 dark:text-green-400" />
                     <span className="text-card-foreground">Personal trainer 2x/mês</span>
                   </div>
                 </div>
@@ -248,19 +248,19 @@ const Landing = () => {
               <CardContent className="space-y-4">
                 <div className="space-y-3">
                   <div className="flex items-center space-x-3">
-                    <Check className="w-5 h-5 text-green-500" />
+                    <Check className="w-5 h-5 text-green-600 dark:text-green-400" />
                     <span className="text-card-foreground">Tudo do plano Premium</span>
                   </div>
                   <div className="flex items-center space-x-3">
-                    <Check className="w-5 h-5 text-green-500" />
+                    <Check className="w-5 h-5 text-green-600 dark:text-green-400" />
                     <span className="text-card-foreground">Personal trainer ilimitado</span>
                   </div>
                   <div className="flex items-center space-x-3">
-                    <Check className="w-5 h-5 text-green-500" />
+                    <Check className="w-5 h-5 text-green-600 dark:text-green-400" />
                     <span className="text-card-foreground">Nutricionista</span>
                   </div>
                   <div className="flex items-center space-x-3">
-                    <Check className="w-5 h-5 text-green-500" />
+                    <Check className="w-5 h-5 text-green-600 dark:text-green-400" />
                     <span className="text-card-foreground">Área VIP exclusiva</span>
                   </div>
                 </div>

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste de Erros de Validação</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .test-button:hover {
+            background: #0056b3;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+        }
+        .error {
+            border-left-color: #dc3545;
+            background: #f8d7da;
+        }
+        .success {
+            border-left-color: #28a745;
+            background: #d4edda;
+        }
+    </style>
+</head>
+<body>
+    <h1>Teste de Funcionalidade de Erros de Validação</h1>
+    
+    <div class="test-section">
+        <h2>Teste do Hook useFieldErrors</h2>
+        <p>Este teste simula diferentes cenários de erro que a API pode retornar:</p>
+        
+        <button class="test-button" onclick="testFieldErrors()">Testar Erros de Campo</button>
+        <button class="test-button" onclick="testGeneralError()">Testar Erro Geral</button>
+        <button class="test-button" onclick="testMixedErrors()">Testar Erros Mistos</button>
+        <button class="test-button" onclick="testClearErrors()">Limpar Erros</button>
+        
+        <div id="result" class="result" style="display: none;"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Cenários de Teste</h2>
+        <h3>1. Erros de Campo Específicos</h3>
+        <p>Simula quando a API retorna erros para campos específicos (ex: email já existe, senha muito fraca)</p>
+        
+        <h3>2. Erro Geral</h3>
+        <p>Simula quando a API retorna um erro geral (ex: servidor indisponível)</p>
+        
+        <h3>3. Erros Mistos</h3>
+        <p>Simula quando a API retorna tanto erros de campo quanto erro geral</p>
+    </div>
+
+    <script>
+        // Simula o hook useFieldErrors
+        class FieldErrorsSimulator {
+            constructor() {
+                this.fieldErrors = {};
+                this.generalError = '';
+            }
+
+            clearErrors() {
+                this.fieldErrors = {};
+                this.generalError = '';
+                this.updateDisplay();
+            }
+
+            setErrorsFromApi(error) {
+                this.clearErrors();
+                
+                // Simula a estrutura de erro da API
+                if (error.response && error.response.data) {
+                    const data = error.response.data;
+                    
+                    if (data.details && Array.isArray(data.details)) {
+                        // Erros de campo específicos
+                        data.details.forEach(detail => {
+                            if (detail.field && detail.message) {
+                                this.fieldErrors[detail.field] = detail.message;
+                            }
+                        });
+                    }
+                    
+                    if (data.message && !Object.keys(this.fieldErrors).length) {
+                        // Erro geral se não há erros de campo
+                        this.generalError = data.message;
+                    }
+                } else {
+                    this.generalError = error.message || 'Erro desconhecido';
+                }
+                
+                this.updateDisplay();
+            }
+
+            getFieldError(field) {
+                return this.fieldErrors[field] || '';
+            }
+
+            hasFieldError(field) {
+                return !!this.fieldErrors[field];
+            }
+
+            updateDisplay() {
+                const result = document.getElementById('result');
+                result.style.display = 'block';
+                
+                let html = '<h3>Estado Atual dos Erros:</h3>';
+                
+                if (this.generalError) {
+                    html += `<div class="error"><strong>Erro Geral:</strong> ${this.generalError}</div>`;
+                }
+                
+                if (Object.keys(this.fieldErrors).length > 0) {
+                    html += '<div><strong>Erros de Campo:</strong><ul>';
+                    for (const [field, message] of Object.entries(this.fieldErrors)) {
+                        html += `<li><strong>${field}:</strong> ${message}</li>`;
+                    }
+                    html += '</ul></div>';
+                }
+                
+                if (!this.generalError && Object.keys(this.fieldErrors).length === 0) {
+                    html += '<div class="success">Nenhum erro presente</div>';
+                }
+                
+                result.innerHTML = html;
+            }
+        }
+
+        const errorSimulator = new FieldErrorsSimulator();
+
+        function testFieldErrors() {
+            const mockError = {
+                response: {
+                    data: {
+                        message: 'Dados de validação inválidos',
+                        details: [
+                            { field: 'email', message: 'Este email já está em uso' },
+                            { field: 'password', message: 'Senha deve ter pelo menos 8 caracteres' },
+                            { field: 'name', message: 'Nome é obrigatório' }
+                        ]
+                    }
+                }
+            };
+            
+            errorSimulator.setErrorsFromApi(mockError);
+        }
+
+        function testGeneralError() {
+            const mockError = {
+                response: {
+                    data: {
+                        message: 'Servidor temporariamente indisponível'
+                    }
+                }
+            };
+            
+            errorSimulator.setErrorsFromApi(mockError);
+        }
+
+        function testMixedErrors() {
+            const mockError = {
+                response: {
+                    data: {
+                        message: 'Erro de validação',
+                        details: [
+                            { field: 'email', message: 'Email inválido' },
+                            { field: 'phone', message: 'Telefone deve ter 11 dígitos' }
+                        ]
+                    }
+                }
+            };
+            
+            errorSimulator.setErrorsFromApi(mockError);
+        }
+
+        function testClearErrors() {
+            errorSimulator.clearErrors();
+        }
+    </script>
+</body>
+</html>

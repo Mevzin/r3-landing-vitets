@@ -2,6 +2,7 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Landing from '../pages/Landing';
 import Login from '../pages/Login';
+import Register from '../pages/Register';
 import NotFound from '../pages/NotFound';
 import { PublicRoute } from '../components/auth/PublicRoute';
 import { UserRoutes } from './user.routes';
@@ -15,6 +16,11 @@ export const AppRoutes: React.FC = () => {
       <Route path="login" element={
         <PublicRoute>
           <Login />
+        </PublicRoute>
+      } />
+      <Route path="register" element={
+        <PublicRoute>
+          <Register />
         </PublicRoute>
       } />
       <Route path="/*" element={<UserRoutes />} />

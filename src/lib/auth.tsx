@@ -22,7 +22,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [hasCheckedAuth, setHasCheckedAuth] = useState(false);
 
   useEffect(() => {
-
     if (!hasCheckedAuth) {
       checkAuthStatus();
     }
@@ -30,13 +29,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const checkAuthStatus = async () => {
     try {
+      // Verificar se há tokens armazenados
+      if (!authService.isAuthenticated()) {
+        setUser(null);
+        setIsLoading(false);
+        setHasCheckedAuth(true);
+        return;
+      }
 
       const response = await authService.getCurrentUser();
       setUser(response);
     } catch (error) {
       console.error('Error checking auth status:', error);
-      
-      
+      // Se falhar ao verificar status, limpar tokens e usuário
+      authService.logout();
       setUser(null);
     } finally {
       setIsLoading(false);

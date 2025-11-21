@@ -64,7 +64,7 @@ const Progress: React.FC = () => {
 
   const getTrendIcon = (current: number, previous: number) => {
     if (current > previous) {
-      return <TrendingUp className="w-4 h-4 text-green-500" />;
+      return <TrendingUp className="w-4 h-4 text-green-600 dark:text-green-400" />;
     } else if (current < previous) {
       return <TrendingDown className="w-4 h-4 text-red-500" />;
     }
@@ -220,7 +220,7 @@ const Progress: React.FC = () => {
                   <h4 className="font-medium text-green-800">Maior Sequência</h4>
                   <p className="text-sm text-green-600">{stats?.longestStreak || 0} dias consecutivos</p>
                 </div>
-                <Target className="w-8 h-8 text-green-500" />
+                <Target className="w-8 h-8 text-green-600 dark:text-green-400" />
               </div>
               
               <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">

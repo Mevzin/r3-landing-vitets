@@ -11,7 +11,6 @@ import PlanFormDialog from '../components/PlanFormDialog';
 const Plans: React.FC = () => {
   const { user } = useAuth();
   const [plans, setPlans] = useState<Plan[]>([]);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [userSubscription, setUserSubscription] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -217,7 +216,7 @@ const Plans: React.FC = () => {
                   <ul className="space-y-3">
                     {getPlanFeatures(plan).map((feature, index) => (
                       <li key={index} className="flex items-center">
-                        <Check className="w-4 h-4 text-green-500 mr-3 flex-shrink-0" />
+                        <Check className="w-4 h-4 text-green-600 dark:text-green-400 mr-3 flex-shrink-0" />
                         <span className="text-sm">{feature}</span>
                       </li>
                     ))}
@@ -266,7 +265,7 @@ const Plans: React.FC = () => {
             <ul className="space-y-3">
               {getPlanFeatures(currentPlan || {} as Plan).map((feature, index) => (
                 <li key={index} className="flex items-center">
-                  <Check className="w-4 h-4 text-green-500 mr-3 flex-shrink-0" />
+                  <Check className="w-4 h-4 text-green-600 dark:text-green-400 mr-3 flex-shrink-0" />
                   <span className="text-sm">{feature}</span>
                 </li>
               ))}
@@ -348,7 +347,7 @@ const Plans: React.FC = () => {
               <ul className="space-y-2">
                 {getPlanFeatures(plan).slice(0, 3).map((feature, index) => (
                   <li key={index} className="flex items-center">
-                    <Check className="w-3 h-3 text-green-500 mr-2 flex-shrink-0" />
+                    <Check className="w-3 h-3 text-green-600 dark:text-green-400 mr-2 flex-shrink-0" />
                     <span className="text-xs">{feature}</span>
                   </li>
                 ))}
